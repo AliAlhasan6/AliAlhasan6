@@ -105,6 +105,7 @@ Research assistant combining retrieval-augmented generation with an explicit cit
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black)
 ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
 
+
 **Mechanical**
 ![SolidWorks](https://img.shields.io/badge/SolidWorks-D71920?style=flat-square)
 ![CNC Machining](https://img.shields.io/badge/CNC_Machining-555555?style=flat-square)
