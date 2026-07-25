@@ -1,7 +1,7 @@
 <h1 align="center">Ali Y. Alhasan</h1>
 
 <p align="center">
-  <b>PhD Candidate</b> · Neuro-Symbolic Knowledge Systems<br>
+  <b>PhD Candidate</b> · Full stack Robotics Engineer, Neuro-Symbolic Knowledge Systems<br>
   Saint Petersburg Electrotechnical University "LETI" · Specialty 1.2.1
 </p>
 
