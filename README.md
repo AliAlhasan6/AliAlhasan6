@@ -1,4 +1,4 @@
-<h1 align="center">Ali Alhasan</h1>
+<h1 align="center">Ali Y. Alhasan</h1>
 
 <p align="center">
   <b>PhD Candidate</b> · Neuro-Symbolic Knowledge Systems<br>
