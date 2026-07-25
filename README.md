@@ -35,14 +35,6 @@ Implementation: [Stage 1](https://github.com/AliAlhasan6/Neural-Knowledge-Compre
 
 **Finding.** Two of the compressor's four scoring signals — `score_semantic` and `score_recency` — are inert on FB15k-237. The dataset supplies no textual descriptions and no temporal annotations, so both collapse to constant fallback values, leaving `w_struct` and `w_surp` as the only contributing weights. The sensitivity analysis establishing this is in preparation.
 
-### Publications
-
-| Venue | Status |
-|:--|:--|
-| IEEE SCM 2026 | Under revision |
-| Compressor weight-sensitivity analysis | In preparation |
-
----
 
 ## Projects
 
