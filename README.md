@@ -9,10 +9,7 @@
   <a href="mailto:aliyossefalhasan@gmail.com">
     <img src="https://img.shields.io/badge/Email-333333?style=flat-square&logo=maildotru&logoColor=white" alt="Email">
   </a>
-  <a href="https://scholar.google.com/">
-    <img src="https://img.shields.io/badge/Scholar-333333?style=flat-square&logo=googlescholar&logoColor=white" alt="Google Scholar">
-  </a>
-  <a href="https://orcid.org/">
+  <a href="https://orcid.org/0009-0007-1496-2736">
     <img src="https://img.shields.io/badge/ORCID-333333?style=flat-square&logo=orcid&logoColor=white" alt="ORCID">
   </a>
 </p>
