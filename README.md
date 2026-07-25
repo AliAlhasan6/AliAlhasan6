@@ -1,151 +1,117 @@
-# MacroVoice
+<h1 align="center">Ali Alhasan</h1>
 
-A local AI health assistant you talk to from your phone. Send a photo of your food to a Telegram bot; it identifies the ingredients, asks you to confirm, then replies **by voice** with a short macros summary and remembers the dish. Next time you photograph something similar, it asks whether it's the same dish and reuses what it learned.
+<p align="center">
+  <b>PhD Candidate</b> · Neuro-Symbolic Knowledge Systems<br>
+  Saint Petersburg Electrotechnical University "LETI" · Specialty 1.2.1
+</p>
 
-Everything runs locally on a laptop. The only thing that leaves the machine is Telegram message transport — all inference (vision, speech, embeddings, lookup) happens on-device with no cloud APIs and no per-use cost.
+<p align="center">
+  <a href="mailto:aliyossefalhasan@gmail.com">
+    <img src="https://img.shields.io/badge/Email-333333?style=flat-square&logo=maildotru&logoColor=white" alt="Email">
+  </a>
+  <a href="https://scholar.google.com/">
+    <img src="https://img.shields.io/badge/Scholar-333333?style=flat-square&logo=googlescholar&logoColor=white" alt="Google Scholar">
+  </a>
+  <a href="https://orcid.org/">
+    <img src="https://img.shields.io/badge/ORCID-333333?style=flat-square&logo=orcid&logoColor=white" alt="ORCID">
+  </a>
+</p>
 
-## Pipeline of work
+---
 
-How a single photo becomes a voice reply:
+## Research
 
-```mermaid
-flowchart TD
-    A["📱 Phone — Telegram<br/>photo + text"] --> B["Bot server<br/>python-telegram-bot · long polling"]
-    B --> C{"LangGraph agent<br/>per-chat state machine"}
+> Distributed multi-agent knowledge sharing: how autonomous agents exchange structured knowledge under bandwidth constraints when no single agent holds the complete graph.
 
-    C -->|"known dish?"| E["MiniVec store<br/>CLIP image + text vectors<br/>(dish memory)"]
-    C -->|"new dish"| D["qwen3-vl Instruct<br/>Ollama · GPU<br/>detect ingredients"]
+Supervisor: Dr. Ilya I. Viksnin. Prior degrees: B.Sc. mechanical engineering and metallurgy, M.Sc. automation and mechatronics.
 
-    E -->|"match"| F["Confirm with user<br/>await ‘yes’ / correction"]
-    E -->|"no match"| D
-    D --> F
+### NSK pipeline
 
-    F -->|"confirmed"| G["Macros DB<br/>SQLite + FTS5<br/>per-100g lookup"]
-    G --> H["Compose short reply<br/>+ save dish to memory"]
-    H --> I["Kokoro TTS<br/>CPU · text → WAV"]
-    I --> J["ffmpeg<br/>WAV → OGG/Opus"]
-    J --> K["Telegram voice note"]
-    K --> A
-```
+Three-stage architecture for knowledge-graph exchange between agents, evaluated on FB15k-237.
+Implementation: [Stage 1](https://github.com/AliAlhasan6/Neural-Knowledge-Compression-NSK-) · [Stage 2](https://github.com/AliAlhasan6/Neural-Knowledge-Compression-Stage-2-NSK_2-)
 
-A per-chat state machine drives the conversation through confirmation steps: it proposes ingredients and waits for your "yes" or a correction before computing macros or saving anything. On a new photo it first checks dish memory (MiniVec) — a hit asks "same dish as before?"; a miss runs the vision model.
+| Stage | Component | Function |
+|:--|:--|:--|
+| 1 | Graph compressor | Scores and selects which facts merit transmission |
+| 2 | GATv2 embedder | Encodes the selected subgraph |
+| 3 | Gated merger | Integrates received knowledge into the local graph |
 
-## Features
+**Finding.** Two of the compressor's four scoring signals — `score_semantic` and `score_recency` — are inert on FB15k-237. The dataset supplies no textual descriptions and no temporal annotations, so both collapse to constant fallback values, leaving `w_struct` and `w_surp` as the only contributing weights. The sensitivity analysis establishing this is in preparation.
 
-- **Photo → ingredients.** A local vision model (qwen3-vl Instruct) returns the most likely ingredients and a rough portion estimate.
-- **Confirm before commit.** Nothing is saved until you confirm or correct the ingredient list by text.
-- **Voice replies.** Answers come back as natural-sounding Telegram voice notes (Kokoro TTS), not text.
-- **Dish memory.** A from-scratch vector store recognizes dishes you've logged before from the photo alone and asks "same as last time?"
-- **Macros lookup.** Confirmed ingredients are matched against a local nutrition database (exact → fuzzy → flagged estimate fallback).
-- **Fully local & always-on.** Runs as a background service; answers your phone as long as the laptop is on, with no cloud dependency at runtime.
+### Publications
 
-## Stack
+| Venue | Status |
+|:--|:--|
+| IEEE SCM 2026 | Under revision |
+| Compressor weight-sensitivity analysis | In preparation |
 
-| Layer | Tool |
-|---|---|
-| Transport | Telegram Bot API (long polling) |
-| Orchestration | LangGraph state machine |
-| Vision | qwen3-vl (Instruct) via Ollama |
-| Speech | Kokoro TTS (CPU) → ffmpeg (OGG/Opus) |
-| Dish memory | MiniVec — custom numpy vector store, CLIP `clip-ViT-B-32` embeddings |
-| Macros | SQLite with FTS5, built from a seed CSV |
+---
 
-Built and tested on a GTX 1050 Ti (4 GB VRAM), Ubuntu 24.04. The vision model is the only GPU tenant (~3.4 GB peak); CLIP and Kokoro run on CPU.
+## Projects
 
-## Requirements
+All four run entirely on local hardware — one GTX 1050 Ti, 4 GB VRAM — with no cloud inference at runtime.
 
-- Linux (tested on Ubuntu 24.04), Python 3.12
-- [Ollama](https://ollama.com) running as a service
-- `ffmpeg` (system package — for voice-note encoding)
-- A Telegram bot token (from [@BotFather](https://t.me/BotFather)) and your numeric Telegram user ID
-- An NVIDIA GPU with ~4 GB VRAM recommended (CPU-only will work but vision will be slow)
+<table>
+<tr>
+<td width="50%" valign="top">
 
-## Setup
+### [NSKsim](https://github.com/AliAlhasan6/NSKsim)
 
-```bash
-# 1. System dependency
-sudo apt-get install -y ffmpeg
+Multi-robot simulation exercising the NSK pipeline under movement and partial observation. 5–8 differential-drive robots exchange compressed knowledge-graph embeddings over ZeroMQ.
 
-# 2. Clone and create an isolated environment
-git clone https://github.com/AliAlhasan6/macrovoice.git
-cd macrovoice
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt   # CPU torch wheel; CLIP/Kokoro run on CPU by design
+`ROS 2 Jazzy` `Gazebo Harmonic` `ZeroMQ` `RViz2`
 
-# 3. Pull the vision model
-ollama pull qwen3-vl:4b-instruct
+</td>
+<td width="50%" valign="top">
 
-# 4. Build the macros database from the seed CSV (see "Macros data" below)
-python scripts/build_macros_db.py
+### [MacroVoice](https://github.com/AliAlhasan6/macrovoice)
 
-# 5. Configure secrets
-cp .env.example .env
-# edit .env: set TELEGRAM_TOKEN and ALLOWED_USER_ID
-```
+Local nutrition-tracking assistant on Telegram. Image and voice input, local vision-language model, curated food database, speech output. Deployed as a systemd service. **239 tests passing.**
 
-> **First run downloads model files.** The first launch fetches the Kokoro voice model and a spaCy English model (used for speech), and the first vision call loads CLIP (~350 MB). These are cached afterward; the first startup will look like it's pausing while they download.
+`LangGraph` `Ollama` `SQLite/FTS5` `Kokoro TTS`
 
-### Run
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
 
-```bash
-.venv/bin/python -m src.bot
-```
+### [CodeForge](https://github.com/AliAlhasan6/codeforge)
 
-Message your bot from Telegram (only the configured `ALLOWED_USER_ID` is answered). Send a food photo and follow the voice prompts.
+Four-agent self-correcting code generation: supervisor, coder, tester, executor, critic, with execution confined to a Docker sandbox. **80% first-iteration pass rate** on a LeetCode-easy benchmark.
 
-## Running as a service
+`LangGraph` `qwen2.5-coder` `Docker`
 
-To keep MacroVoice answering your phone whenever the laptop is on, run it as a user systemd service. A unit file lives at `~/.config/systemd/user/macrovoice.service`.
+</td>
+<td width="50%" valign="top">
 
-```bash
-systemctl --user enable --now macrovoice   # start now + on login
-loginctl enable-linger $USER               # keep running while logged out
-systemctl --user status macrovoice         # check state
-journalctl --user -u macrovoice -f         # follow logs
-systemctl --user stop macrovoice           # stop
-```
+### [PaperMind](https://github.com/AliAlhasan6/papermind)
 
-The service does not declare an Ollama dependency: on startup the bot polls `OLLAMA_URL/api/tags` for up to ~30s, so it tolerates Ollama not being ready yet (e.g. both coming up at boot) and exits with a clear message if Ollama never responds. Ollama runs as a system service and starts at boot independently.
+Research assistant combining retrieval-augmented generation with an explicit citation knowledge graph, on the reasoning that citation structure carries signal vector similarity discards.
 
-> Only one instance may poll a given bot token at a time. If you see a Telegram `Conflict: terminated by other getUpdates` error, a second copy of the bot is running — stop it (`pkill -f src.bot`) and restart the service.
+`LangGraph` `ChromaDB` `NetworkX` `Ollama`
 
-## Macros data
+</td>
+</tr>
+</table>
 
-The nutrition database is built locally from `data/macros_seed.csv` — a compiled set of common foods with per-100g values (kcal, protein, fat, carbs). The included seed values are **approximate reference figures** (tagged `starter_approx` in the `source` column), suitable for a tracker that speaks rounded numbers ("about 450 calories"). They are not exact transcriptions of any single published table.
+---
 
-To use authoritative values, replace or extend rows in the CSV with figures from a reference of your choice (e.g. the Skurikhin/Tutelyan tables for Russian foods) and set the `source` column accordingly, then rebuild:
+## Technical
 
-```bash
-python scripts/build_macros_db.py
-```
+**Machine learning**
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
+![PyG](https://img.shields.io/badge/PyTorch_Geometric-3C2179?style=flat-square)
+![GATv2](https://img.shields.io/badge/GATv2-555555?style=flat-square)
+![RAG](https://img.shields.io/badge/RAG-555555?style=flat-square)
 
-The built database (`data/macros.sqlite`) is **not** committed — only the seed CSV and build script are, so anyone cloning rebuilds their own.
+**Robotics**
+![ROS 2](https://img.shields.io/badge/ROS_2-22314E?style=flat-square&logo=ros&logoColor=white)
+![Gazebo](https://img.shields.io/badge/Gazebo-1A1A1A?style=flat-square)
+![ZeroMQ](https://img.shields.io/badge/ZeroMQ-DF0000?style=flat-square)
 
-## Privacy
-
-- The bot answers only a single whitelisted Telegram user ID; all other messages are ignored.
-- Food photos are EXIF-stripped on save (removes any embedded GPS location).
-- Personal data — your photos, dish history, and conversation state — lives only under `data/` and is never committed.
-- Secrets live only in `.env` (gitignored); only `.env.example` with placeholders is in the repo.
-
-## Limitations
-
-- Vision and macros are estimates. The local vision model can mislabel mixed dishes or return near-duplicate ingredients; portion sizes are rough guesses you can correct.
-- Voice replies are English (the TTS model's strongest voices). Food names are transliterated so they're pronounced reasonably.
-- One dish per photo (multi-dish plates are on the roadmap).
-- Single user; no daily totals or meal log yet (planned).
-
-## Roadmap
-
-- Multi-dish plates: detect and log several dishes from one photo
-- Eval harness to measure ingredient-detection accuracy and dish-match precision/recall
-- Ground the free-text Q&A path so it answers from actual state rather than guessing
-- Russian TTS and bilingual replies
-- Daily totals and a queryable meal log ("what did I eat today?")
-- Optional fully-private transport (Tailscale + local web UI)
-- Approximate-nearest-neighbor (HNSW) indexing in MiniVec
-
-## License
-
-MIT — see `LICENSE`.
+**Engineering**
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
