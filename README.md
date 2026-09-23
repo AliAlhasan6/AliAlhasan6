@@ -20,7 +20,7 @@
 
 > Distributed multi-agent knowledge sharing: how autonomous agents exchange structured knowledge under bandwidth constraints when no single agent holds the complete graph.
 
-Supervisor: Dr. Ilya I. Viksnin. Prior degrees: B.Sc. mechanical engineering and metallurgy, M.Sc. automation and mechatronics.
+Prior degrees: B.Sc. mechanical engineering and metallurgy, M.Sc. automation and mechatronics.
 
 ### NSK pipeline
 
